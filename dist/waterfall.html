@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waterfall Layout - last77.org</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .waterfall {
+            column-count: 4;
+            column-gap: 20px;
+        }
+        .item {
+            break-inside: avoid;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        @media (max-width: 1200px) {
+            .waterfall { column-count: 3; }
+        }
+        @media (max-width: 800px) {
+            .waterfall { column-count: 2; }
+        }
+        @media (max-width: 500px) {
+            .waterfall { column-count: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Waterfall Layout</h1>
+    <div class="waterfall">
+        <div class="item">
+            <img src="https://picsum.photos/400/300?random=1" alt="Random image 1">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris.</p>
+        </div>
+        <div class="item">
+            <img src="https://picsum.photos/400/600?random=2" alt="Random image 2">
+            <p>Phasellus ut condimentum diam, eget tempus lorem. Morbi bibendum est quis arcu posuere condimentum.</p>
+        </div>
+        <div class="item">
+            <p>Donec eget dignissim erat. Praesent non lorem mollis, tempor ipsum ut, fermentum nulla.</p>
+        </div>
+        <div class="item">
+            <img src="https://picsum.photos/400/400?random=3" alt="Random image 3">
+            <p>Cras quis enim in justo euismod sodales. Aliquam erat volutpat.</p>
+        </div>
+        <div class="item">
+            <img src="https://picsum.photos/400/300?random=4" alt="Random image 4">
+            <p>Vivamus pellentesque ligula ut nunc tincidunt, eget volutpat velit tristique.</p>
+        </div>
+        <!-- 添加更多的 item div 来增加内容 -->
+    </div>
+</body>
+</html>
