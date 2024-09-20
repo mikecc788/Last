@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to last77.org</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 添加响应式设计的CSS */
+        @media screen and (max-width: 768px) {
+            .carousel-container, .product-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .carousel-item, .product-item {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .carousel-button, .slider-button {
+                display: none; /* 在移动设备上隐藏滑动按钮 */
+            }
+        }
+    </style>
 </head>
 <body>
     <header>

@@ -36,6 +36,20 @@
         .signup-form button:hover {
             background-color: #555;
         }
+        .phone-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+        .phone-input input {
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+        .phone-input button {
+            width: auto;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -49,9 +63,14 @@
     <main>
         <div class="signup-form">
             <h1>Sign Up for Our Newsletter</h1>
-            <form action="#" method="post">
+            <form action="#" method="post" id="signupForm">
                 <input type="text" name="name" placeholder="Your Name" required>
                 <input type="email" name="email" placeholder="Your Email" required>
+                <div class="phone-input">
+                    <input type="tel" name="phone" placeholder="Your Phone Number" required>
+                    <button type="button" id="sendCodeBtn">Send Code</button>
+                </div>
+                <input type="text" name="verificationCode" placeholder="Verification Code" required>
                 <button type="submit">Sign Up</button>
             </form>
         </div>
@@ -59,5 +78,35 @@
     <footer>
         <p>&copy; 2023 last77.org. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.getElementById('sendCodeBtn').addEventListener('click', function() {
+            const phoneNumber = document.querySelector('input[name="phone"]').value;
+            if (phoneNumber) {
+                // Send verification code request
+                fetch('/api/send-verification-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phoneNumber: phoneNumber }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Verification code sent successfully!');
+                    } else {
+                        alert('Failed to send verification code. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again later.');
+                });
+            } else {
+                alert('Please enter your phone number.');
+            }
+        });
+    </script>
 </body>
 </html>
