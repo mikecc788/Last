@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>近期赛程 - last77.org</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .scores-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        .match {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            width: 100%;
+        }
+        .league-selector {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .league-button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .league-button.active {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../index.html#products">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="waterfall.html">Gallery</a></li>
+                <li><a href="scores.html">比分</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="scores-container">
+        <h1>近期赛程</h1>
+        <div class="league-selector">
+            <button class="league-button active" data-type="xijia">西甲</button>
+            <button class="league-button" data-type="dejia">德甲</button>
+            <button class="league-button" data-type="yingchao">英超</button>
+            <button class="league-button" data-type="yijia">意甲</button>
+            <button class="league-button" data-type="fajia">法甲</button>
+            <button class="league-button" data-type="zhongchao">中超</button>
+        </div>
+        <div id="scores-list"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 last77.org. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiKey = '04403d6f5753fac7c29e327576133028';
+            const apiUrl = 'http://apis.juhe.cn/fapig/football/query';
+            let currentType = 'xijia';
+
+            const leagueButtons = document.querySelectorAll('.league-button');
+            leagueButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    currentType = this.dataset.type;
+                    leagueButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    fetchScores(currentType);
+                });
+            });
+
+            function fetchScores(type) {
+                const requestUrl = `${apiUrl}?type=${type}&key=${apiKey}`;
+                console.log(requestUrl);
+                fetch(requestUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error_code === 0) {
+                            displayMatches(data.result);
+                        } else {
+                            console.error('API 请求失败:', data.reason);
+                            displayError('获取赛程信息失败，请稍后再试。');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('请求出错:', error);
+                        displayError('网络错误，请检查您的连接并稍后再试。');
+                    });
+            }
+
+            function displayMatches(matches) {
+                const scoresListElement = document.getElementById('scores-list');
+                let html = '';
+
+                matches.forEach(match => {
+                    html += `
+                        <div class="match">
+                            <h3>${match.league_name}</h3>
+                            <p>比赛时间: ${match.match_time}</p>
+                            <p>${match.home_team} vs ${match.away_team}</p>
+                            <p>比分: ${match.home_score} - ${match.away_score}</p>
+                        </div>
+                    `;
+                });
+
+                scoresListElement.innerHTML = html;
+            }
+
+            function displayError(message) {
+                document.getElementById('scores-list').innerHTML = `<p>${message}</p>`;
+            }
+
+            // 初始加载西甲数据
+            fetchScores(currentType);
+        });
+    </script>
+</body>
+</html>

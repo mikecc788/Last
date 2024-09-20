@@ -2,6 +2,9 @@
     "name": "last77-website",
     "version": "1.0.0",
     "scripts": {
-      "build": "mkdir -p dist && cp -r pages images css js index.html LICENSE dist/"
+        "build": "mkdir -p dist && cp -r pages images css js index.html LICENSE dist/"
+    },
+    "dependencies": {
+        "build": "^0.1.4"
     }
-  }
+}
