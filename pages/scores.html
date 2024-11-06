@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>近期赛程 - last77.org</title>
+    <title>AI Assistant - last77.org</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
         body {
@@ -11,138 +11,247 @@
             flex-direction: column;
             min-height: 100vh;
             margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f9f9f9;
         }
-        .scores-container {
-            max-width: 800px;
+
+        .chat-container {
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
             flex: 1;
-        }
-        .match {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-        }
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1rem 0;
-            width: 100%;
-        }
-        .league-selector {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            overflow: hidden;
+            flex-direction: column;
         }
-        .league-button {
+
+        .messages-container {
             flex: 1;
-            padding: 10px;
-            border: none;
-            background-color: transparent;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            overflow-y: auto;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: calc(100vh - 180px);
         }
-        .league-button.active {
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .message.assistant .message-content {
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message.user .message-content {
             background-color: #007bff;
             color: white;
+            margin-left: auto;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            position: sticky;
+            bottom: 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            resize: none;
+            max-height: 200px;
+            min-height: 24px;
+        }
+
+        .input-field:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+        }
+
+        .send-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 15px;
+        }
+
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+
+        .send-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            padding: 12px 16px;
+            background-color: white;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .typing-indicator.visible {
+            display: block;
+        }
+
+        pre {
+            background-color: #f6f8fa;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="../index.html#products">Products</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="waterfall.html">Gallery</a></li>
-                <li><a href="scores.html">比分</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="scores-container">
-        <h1>近期赛程</h1>
-        <div class="league-selector">
-            <button class="league-button active" data-type="xijia">西甲</button>
-            <button class="league-button" data-type="dejia">德甲</button>
-            <button class="league-button" data-type="yingchao">英超</button>
-            <button class="league-button" data-type="yijia">意甲</button>
-            <button class="league-button" data-type="fajia">法甲</button>
-            <button class="league-button" data-type="zhongchao">中超</button>
+    <main class="chat-container">
+        <div class="messages-container" id="messages">
+            <div class="message assistant">
+                <div class="message-content">
+                    你好！我是 AI 助手。请问有什么我可以帮你的吗？
+                </div>
+            </div>
         </div>
-        <div id="scores-list"></div>
+        <div class="input-container">
+            <textarea class="input-field" id="user-input" 
+                      placeholder="输入消息..." 
+                      rows="1"
+                      onkeydown="handleKeyPress(event)"></textarea>
+            <button class="send-button" id="send-button" onclick="sendMessage()">发送</button>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2023 last77.org. All rights reserved.</p>
-    </footer>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const apiKey = '04403d6f5753fac7c29e327576133028';
-            const apiUrl = 'http://apis.juhe.cn/fapig/football/query';
-            let currentType = 'xijia';
+        const API_KEY = 'sk-wicCxPAWEyCVDcdwGrX9sockz9ZX0qVIoy8LVC4X2KVKeKXN';
+        const API_URL = 'https://xiaoai.plus/v1/chat/completions';
+        let conversationHistory = [];
+        let isProcessing = false;
 
-            const leagueButtons = document.querySelectorAll('.league-button');
-            leagueButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    currentType = this.dataset.type;
-                    leagueButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    fetchScores(currentType);
-                });
+        // 自动调整文本框高度
+        const textarea = document.getElementById('user-input');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // 处理回车键事件
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // 发送消息
+        async function sendMessage() {
+            if (isProcessing) return;
+
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            const sendButton = document.getElementById('send-button');
+            
+            if (!message) return;
+
+            // 添加用户消息
+            addMessage('user', message);
+            input.value = '';
+            input.style.height = 'auto';
+
+            // 禁用输入和发送按钮
+            isProcessing = true;
+            input.disabled = true;
+            sendButton.disabled = true;
+
+            // 添加消息到历史记录
+            conversationHistory.push({
+                role: "user",
+                content: message
             });
 
-            function fetchScores(type) {
-                const requestUrl = `${apiUrl}?type=${type}&key=${apiKey}`;
-                console.log(requestUrl);
-                fetch(requestUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error_code === 0) {
-                            displayMatches(data.result);
-                        } else {
-                            console.error('API 请求失败:', data.reason);
-                            displayError('获取赛程信息失败，请稍后再试。');
-                        }
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: conversationHistory
                     })
-                    .catch(error => {
-                        console.error('请求出错:', error);
-                        displayError('网络错误，请检查您的连接并稍后再试。');
-                    });
-            }
-
-            function displayMatches(matches) {
-                const scoresListElement = document.getElementById('scores-list');
-                let html = '';
-
-                matches.forEach(match => {
-                    html += `
-                        <div class="match">
-                            <h3>${match.league_name}</h3>
-                            <p>比赛时间: ${match.match_time}</p>
-                            <p>${match.home_team} vs ${match.away_team}</p>
-                            <p>比分: ${match.home_score} - ${match.away_score}</p>
-                        </div>
-                    `;
                 });
 
-                scoresListElement.innerHTML = html;
+                const data = await response.json();
+                
+                if (data.choices && data.choices[0]) {
+                    const aiResponse = data.choices[0].message.content;
+                    addMessage('assistant', aiResponse);
+                    conversationHistory.push({
+                        role: "assistant",
+                        content: aiResponse
+                    });
+                } else {
+                    addMessage('assistant', '抱歉，我遇到了一些问题。请稍后再试。');
+                }
+            } catch (error) {
+                console.error('API请求错误:', error);
+                addMessage('assistant', '抱歉，发生了网络错误。请检查您的连接并稍后再试。');
+            } finally {
+                // 重新启用输入和发送按钮
+                isProcessing = false;
+                input.disabled = false;
+                sendButton.disabled = false;
+                input.focus();
             }
+        }
 
-            function displayError(message) {
-                document.getElementById('scores-list').innerHTML = `<p>${message}</p>`;
-            }
+        // 添加消息到聊天窗口
+        function addMessage(type, content) {
+            const messagesContainer = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            // 处理markdown格式（这里可以使用marked等库来增强markdown支持）
+            messageContent.innerHTML = content.replace(/\n/g, '<br>');
 
-            // 初始加载西甲数据
-            fetchScores(currentType);
-        });
+            messageDiv.appendChild(messageContent);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
     </script>
 </body>
 </html>
