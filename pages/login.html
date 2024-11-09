@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - last77.org</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #0d0c22;
+            margin-bottom: 30px;
+        }
+
+        .google-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            color: #0d0c22;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .google-button:hover {
+            background-color: #f5f5f5;
+        }
+
+        .google-icon {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #6e6d7a;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+            margin: 0 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0d0c22;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #ea4c89;
+        }
+
+        .forgot-password {
+            display: inline-block;
+            color: #ea4c89;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .forgot-password:hover {
+            color: #f082ac;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: #ea4c89;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin: 20px 0;
+        }
+
+        .login-button:hover {
+            background: #f082ac;
+        }
+
+        .signup-link {
+            font-size: 14px;
+            color: #6e6d7a;
+        }
+
+        .signup-link a {
+            color: #ea4c89;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link a:hover {
+            color: #f082ac;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">Sign in to Last77</h1>
+        
+        <a href="#" class="google-button">
+            <img src="../images/google-icon.svg" alt="Google" class="google-icon">
+            Sign in with Google
+        </a>
+
+        <div class="divider">or</div>
+
+        <form action="#" method="POST">
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    Password
+                    <a href="#" class="forgot-password">Forgot?</a>
+                </label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="login-button">Sign In</button>
+        </form>
+
+        <p class="signup-link">
+            Don't have an account? <a href="signup.html">Sign up</a>
+        </p>
+    </div>
+</body>
+</html> 
