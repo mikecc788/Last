@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Last77</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* 博客页面特定样式 */
+        .blog-container {
+            max-width: 960px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        /* 主内容区域 */
+        .blog-main {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+
+        .blog-post {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .blog-post:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .post-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .post-title a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .post-title a:hover {
+            color: #0066cc;
+        }
+
+        .post-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .post-content {
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .read-more {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .read-more:hover {
+            color: #004499;
+        }
+
+        /* 侧边栏 */
+        .blog-sidebar {
+            position: sticky;
+            top: 100px;
+            align-self: start;
+        }
+
+        .sidebar-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-content li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-content a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .sidebar-content a:hover {
+            color: #0066cc;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: #f5f5f5;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .tag:hover {
+            background: #e5e5e5;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-link {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .page-link:hover, .page-link.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .blog-container {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-group">
+                <a href="../index.html" class="last-button">Last</a>
+                <ul class="main-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            Explore
+                            <span class="arrow-down"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#option1">Option 1</a></li>
+                            <li><a href="#option2">Option 2</a></li>
+                            <li><a href="#option3">Option 3</a></li>
+                            <li><a href="#option4">Option 4</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../index.html#products">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="waterfall.html">Gallery</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="scores.html">GPT-4</a></li>
+                </ul>
+            </div>
+            <div class="auth-buttons">
+                <a href="signup.html" class="signup-btn">Sign up</a>
+                <a href="login.html" class="login-btn">Log In</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="blog-container">
+        <!-- 主内容区域 -->
+        <main class="blog-main">
+            <!-- 博客文章 -->
+            <article class="blog-post">
+                <h2 class="post-title">
+                    <a href="#">科技爱好者周刊（第 242 期）：一次性工作</a>
+                </h2>
+                <div class="post-meta">
+                    2024-01-15 · 技术 · 8 min read
+                </div>
+                <div class="post-content">
+                    <p>这些年，我越来越感到，很多工作都是一次性的，做完就没用了。</p>
+                    <p>比如，为了完成一个任务，你需要学习一个新工具，等到任务完成，这个工具就再也用不到了...</p>
+                </div>
+                <a href="#" class="read-more">阅读全文 →</a>
+            </article>
+
+            <article class="blog-post">
+                <h2 class="post-title">
+                    <a href="#">ChatGPT 的技术原理</a>
+                </h2>
+                <div class="post-meta">
+                    2024-01-10 · AI · 12 min read
+                </div>
+                <div class="post-content">
+                    <p>ChatGPT 最近非常红火，成为互联网的当红炸子鸡。</p>
+                    <p>它到底是什么原理？为什么能够像人类一样对话？今天就来谈谈这个话题...</p>
+                </div>
+                <a href="#" class="read-more">阅读全文 →</a>
+            </article>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <a href="#" class="page-link">←</a>
+                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">3</a>
+                <a href="#" class="page-link">→</a>
+            </div>
+        </main>
+
+        <!-- 侧边栏 -->
+        <aside class="blog-sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">关于作者</h3>
+                <div class="sidebar-content">
+                    <p>Last 是一个关注科技、编程和生活的博客。在这里，我们分享技术见解、行业���态和个人思考。</p>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">热门文章</h3>
+                <div class="sidebar-content">
+                    <ul>
+                        <li><a href="#">如何高效学习编程</a></li>
+                        <li><a href="#">人工智能的未来发展</a></li>
+                        <li><a href="#">Web开发最佳实践</a></li>
+                        <li><a href="#">程序员的职业规划</a></li>
+                        <li><a href="#">开源项目维护指南</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">标签云</h3>
+                <div class="sidebar-content">
+                    <div class="tag-cloud">
+                        <a href="#" class="tag">JavaScript</a>
+                        <a href="#" class="tag">Python</a>
+                        <a href="#" class="tag">AI</a>
+                        <a href="#" class="tag">Web开发</a>
+                        <a href="#" class="tag">技术架构</a>
+                        <a href="#" class="tag">前端</a>
+                        <a href="#" class="tag">后端</a>
+                        <a href="#" class="tag">数据库</a>
+                        <a href="#" class="tag">云计算</a>
+                        <a href="#" class="tag">DevOps</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <!-- 使用与主页相同的页脚 -->
+        <div class="footer-container">
+            <!-- 页脚内容... -->
+        </div>
+    </footer>
+</body>
+</html>

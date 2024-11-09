@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Assistant - last77.org</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/lib/highlight.min.js"></script>
     <style>
         body {
             display: flex;
@@ -132,10 +135,181 @@
         code {
             font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
         }
+
+        .system-prompt {
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            border: 1px solid #cce5ff;
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .temperature-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            color: #dc3545;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background-color: #fff5f5;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 16px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #007bff;
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .message-content {
+            overflow-wrap: break-word;
+        }
+
+        .message-content pre {
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .message-content code {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 2px 4px;
+            background-color: #f6f8fa;
+            border-radius: 4px;
+        }
+
+        .message-content pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+
+        .message-content p {
+            margin: 8px 0;
+        }
+
+        .message-content ul, .message-content ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            animation: fadeInOut 3s ease-in-out;
+            z-index: 1000;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .settings-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .settings-panel button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .settings-panel button:hover {
+            background: #0056b3;
+        }
+
+        #chatSelector {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <div class="left-nav">
+                <a href="check.html" class="check-button">查查</a>
+            </div>
+            <ul class="main-nav">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../index.html#products">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="waterfall.html">Gallery</a></li>
+                <li><a href="scores.html">GPT-4</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="settings-panel">
+        <div class="temperature-control">
+            <label for="temperature">Temperature:</label>
+            <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
+            <span id="temperature-value">0.7</span>
+        </div>
+        <button onclick="toggleSystemPrompt()">编辑系统提示词</button>
+        <button onclick="startNewChat()">新会话</button>
+        <button onclick="saveChat()">保存会话</button>
+        <select id="chatSelector" onchange="loadChat(this.value)">
+            <option value="">选择历史会话...</option>
+        </select>
+    </div>
+
     <main class="chat-container">
+        <div class="system-prompt" id="system-prompt" style="display: none;">
+            <textarea id="system-prompt-input" rows="3" style="width: 100%">你是一个有帮助的AI助手。</textarea>
+            <button onclick="updateSystemPrompt()">更新</button>
+        </div>
+
         <div class="messages-container" id="messages">
             <div class="message assistant">
                 <div class="message-content">
@@ -143,9 +317,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="typing-indicator" id="typing-indicator" style="display: none;">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+
         <div class="input-container">
             <textarea class="input-field" id="user-input" 
-                      placeholder="输入消息..." 
+                      placeholder="输入消息... (Shift + Enter 换行)" 
                       rows="1"
                       onkeydown="handleKeyPress(event)"></textarea>
             <button class="send-button" id="send-button" onclick="sendMessage()">发送</button>
@@ -155,17 +336,60 @@
     <script>
         const API_KEY = 'sk-wicCxPAWEyCVDcdwGrX9sockz9ZX0qVIoy8LVC4X2KVKeKXN';
         const API_URL = 'https://xiaoai.plus/v1/chat/completions';
-        let conversationHistory = [];
+        let conversationHistory = [{
+            role: "system",
+            content: "你是一个有帮助的AI助手。请记住我们的对话内容，保持上下文连贯性。"
+        }];
         let isProcessing = false;
+        let currentSystemPrompt = "你是一个有帮助的AI助手。";
 
-        // 自动调整文本框高度
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            breaks: true,
+            gfm: true
+        });
+
+        const temperatureSlider = document.getElementById('temperature');
+        const temperatureValue = document.getElementById('temperature-value');
+        temperatureSlider.addEventListener('input', function() {
+            temperatureValue.textContent = this.value;
+        });
+
+        function toggleSystemPrompt() {
+            const promptDiv = document.getElementById('system-prompt');
+            const promptInput = document.getElementById('system-prompt-input');
+            promptDiv.style.display = promptDiv.style.display === 'none' ? 'block' : 'none';
+            promptInput.value = currentSystemPrompt;
+        }
+
+        function updateSystemPrompt() {
+            const promptInput = document.getElementById('system-prompt-input');
+            currentSystemPrompt = promptInput.value;
+            document.getElementById('system-prompt').style.display = 'none';
+            
+            if (conversationHistory.length > 0 && conversationHistory[0].role === "system") {
+                conversationHistory[0].content = currentSystemPrompt;
+            } else {
+                conversationHistory.unshift({
+                    role: "system",
+                    content: currentSystemPrompt
+                });
+            }
+            
+            addMessage('system', '系统提示词已更新，但保留了对话历史。');
+        }
+
         const textarea = document.getElementById('user-input');
         textarea.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });
 
-        // 处理回车键事件
         function handleKeyPress(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -173,31 +397,132 @@
             }
         }
 
-        // 发送消息
+        let currentChatId = generateChatId();
+        let chats = loadChatsFromStorage();
+
+        function generateChatId() {
+            return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function loadChatsFromStorage() {
+            const savedChats = localStorage.getItem('ai_chats');
+            return savedChats ? JSON.parse(savedChats) : {};
+        }
+
+        function saveChatsToStorage() {
+            localStorage.setItem('ai_chats', JSON.stringify(chats));
+            updateChatSelector();
+        }
+
+        function updateChatSelector() {
+            const selector = document.getElementById('chatSelector');
+            selector.innerHTML = '<option value="">选择历史会话...</option>';
+            
+            Object.entries(chats).forEach(([id, chat]) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = `${chat.title} (${new Date(chat.timestamp).toLocaleString()})`;
+                if (id === currentChatId) {
+                    option.selected = true;
+                }
+                selector.appendChild(option);
+            });
+        }
+
+        function startNewChat() {
+            if (confirm('确定要开始新会话吗？当前会话将自动保存。')) {
+                saveChat();
+                currentChatId = generateChatId();
+                conversationHistory = [{
+                    role: "system",
+                    content: currentSystemPrompt
+                }];
+                document.getElementById('messages').innerHTML = `
+                    <div class="message assistant">
+                        <div class="message-content">
+                            你好！我是 AI 助手。请问有什么我可以帮你的吗？
+                        </div>
+                    </div>
+                `;
+                updateChatSelector();
+            }
+        }
+
+        function saveChat() {
+            if (conversationHistory.length === 0) return;
+
+            const title = prompt('请为这个会话命名:', '未命名会话');
+            if (!title) return;
+
+            chats[currentChatId] = {
+                title,
+                timestamp: Date.now(),
+                messages: conversationHistory,
+                systemPrompt: currentSystemPrompt
+            };
+
+            saveChatsToStorage();
+            showNotification('会话已保存');
+        }
+
+        function loadChat(chatId) {
+            if (!chatId) return;
+            
+            const chat = chats[chatId];
+            if (!chat) return;
+
+            currentChatId = chatId;
+            conversationHistory = chat.messages;
+            if (!conversationHistory.some(msg => msg.role === "system")) {
+                conversationHistory.unshift({
+                    role: "system",
+                    content: chat.systemPrompt || currentSystemPrompt
+                });
+            }
+            currentSystemPrompt = chat.systemPrompt;
+
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+            
+            conversationHistory.forEach(msg => {
+                if (msg.role !== "system") {
+                    addMessage(msg.role, msg.content);
+                }
+            });
+
+            showNotification('已加载会话');
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
         async function sendMessage() {
             if (isProcessing) return;
 
             const input = document.getElementById('user-input');
             const message = input.value.trim();
-            const sendButton = document.getElementById('send-button');
             
             if (!message) return;
 
-            // 添加用户消息
+            const userMessage = { role: "user", content: message };
+            conversationHistory.push(userMessage);
+
             addMessage('user', message);
             input.value = '';
             input.style.height = 'auto';
 
-            // 禁用输入和发送按钮
             isProcessing = true;
             input.disabled = true;
-            sendButton.disabled = true;
-
-            // 添加消息到历史记录
-            conversationHistory.push({
-                role: "user",
-                content: message
-            });
+            document.getElementById('send-button').disabled = true;
+            document.getElementById('typing-indicator').style.display = 'flex';
 
             try {
                 const response = await fetch(API_URL, {
@@ -208,50 +533,115 @@
                     },
                     body: JSON.stringify({
                         model: "gpt-3.5-turbo",
-                        messages: conversationHistory
+                        messages: conversationHistory,
+                        temperature: parseFloat(temperatureSlider.value),
+                        stream: true,
+                        max_tokens: 2000,
+                        presence_penalty: 0.6,
+                        frequency_penalty: 0.5
                     })
                 });
 
-                const data = await response.json();
-                
-                if (data.choices && data.choices[0]) {
-                    const aiResponse = data.choices[0].message.content;
-                    addMessage('assistant', aiResponse);
-                    conversationHistory.push({
-                        role: "assistant",
-                        content: aiResponse
-                    });
-                } else {
-                    addMessage('assistant', '抱歉，我遇到了一些问题。请稍后再试。');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+
+                const messageDiv = createMessageElement('assistant', '');
+                let fullResponse = '';
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6);
+                            if (data === '[DONE]') continue;
+                            
+                            try {
+                                const parsed = JSON.parse(data);
+                                if (parsed.choices[0].delta.content) {
+                                    fullResponse += parsed.choices[0].delta.content;
+                                    updateMessageContent(messageDiv, fullResponse);
+                                }
+                            } catch (e) {
+                                console.error('Error parsing chunk:', e);
+                            }
+                        }
+                    }
+                }
+
+                const assistantMessage = { role: "assistant", content: fullResponse };
+                conversationHistory.push(assistantMessage);
+
+                if (conversationHistory.length > 20) {
+                    conversationHistory = [
+                        conversationHistory[0],
+                        ...conversationHistory.slice(-19)
+                    ];
+                }
+
+                if (!chats[currentChatId]) {
+                    chats[currentChatId] = {
+                        title: '未命名会话',
+                        timestamp: Date.now(),
+                        messages: conversationHistory,
+                        systemPrompt: currentSystemPrompt
+                    };
+                } else {
+                    chats[currentChatId].messages = conversationHistory;
+                }
+                saveChatsToStorage();
+
             } catch (error) {
                 console.error('API请求错误:', error);
-                addMessage('assistant', '抱歉，发生了网络错误。请检查您的连接并稍后再试。');
+                addMessage('system', `错误: ${error.message}`);
+                conversationHistory.pop();
             } finally {
-                // 重新启用输入和发送按钮
+                document.getElementById('typing-indicator').style.display = 'none';
                 isProcessing = false;
                 input.disabled = false;
-                sendButton.disabled = false;
+                document.getElementById('send-button').disabled = false;
                 input.focus();
             }
         }
 
-        // 添加消息到聊天窗口
-        function addMessage(type, content) {
+        function createMessageElement(type, content) {
             const messagesContainer = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             
             const messageContent = document.createElement('div');
             messageContent.className = 'message-content';
-            
-            // 处理markdown格式（这里可以使用marked等库来增强markdown支持）
-            messageContent.innerHTML = content.replace(/\n/g, '<br>');
+            messageContent.innerHTML = marked.parse(content);
 
             messageDiv.appendChild(messageContent);
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            return messageDiv;
         }
+
+        function updateMessageContent(messageDiv, content) {
+            const messageContent = messageDiv.querySelector('.message-content');
+            messageContent.innerHTML = marked.parse(content);
+            hljs.highlightAll();
+            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        function addMessage(type, content) {
+            createMessageElement(type, content);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateChatSelector();
+        });
     </script>
 </body>
 </html>

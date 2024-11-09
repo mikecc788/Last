@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Last77</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+
+        .portfolio-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+
+        /* 个人信息部分 */
+        .profile-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-name {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #0d0c22;
+        }
+
+        .profile-title {
+            font-size: 18px;
+            color: #6e6d7a;
+            margin-bottom: 20px;
+        }
+
+        .profile-motto {
+            font-style: italic;
+            color: #6e6d7a;
+            margin-bottom: 30px;
+        }
+
+        .cv-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .cv-button {
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .cv-button.primary {
+            background-color: #0d0c22;
+            color: white;
+        }
+
+        .cv-button.secondary {
+            background-color: #f5f5f5;
+            color: #0d0c22;
+        }
+
+        .cv-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* 基本信息部分 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .info-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0d0c22;
+        }
+
+        /* 技能部分 */
+        .skills-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #0d0c22;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .skill-name {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .skill-bar {
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: #0d0c22;
+            border-radius: 3px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* 照片墙部分 */
+        .photos-section {
+            margin-bottom: 60px;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* 工作经验部分 */
+        .experience-section {
+            margin-bottom: 60px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #0d0c22;
+            border: 2px solid white;
+        }
+
+        .timeline-date {
+            font-size: 14px;
+            color: #6e6d7a;
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0d0c22;
+        }
+
+        .timeline-company {
+            font-size: 16px;
+            color: #6e6d7a;
+            margin-bottom: 12px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .portfolio-container {
+                margin-top: 60px;
+            }
+
+            .profile-name {
+                font-size: 28px;
+            }
+
+            .cv-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-group">
+                <a href="../index.html" class="last-button">Last</a>
+                <ul class="main-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            Explore
+                            <span class="arrow-down"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#option1">Option 1</a></li>
+                            <li><a href="#option2">Option 2</a></li>
+                            <li><a href="#option3">Option 3</a></li>
+                            <li><a href="#option4">Option 4</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../index.html#products">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="waterfall.html">Gallery</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="scores.html">GPT-4</a></li>
+                </ul>
+            </div>
+            <div class="auth-buttons">
+                <a href="signup.html" class="signup-btn">Sign up</a>
+                <a href="login.html" class="login-btn">Log In</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="portfolio-container">
+        <!-- 个人信息部分 -->
+        <section class="profile-section">
+            <img src="../images/avatar.jpg" alt="Profile" class="profile-image">
+            <h1 class="profile-name">Last</h1>
+            <div class="profile-title">Full Stack Developer & UI/UX Designer</div>
+            <div class="profile-motto">"No pains, no gains."</div>
+            <div class="cv-buttons">
+                <a href="#" class="cv-button primary">Download CV (EN)</a>
+                <a href="#" class="cv-button secondary">Download CV (CN)</a>
+            </div>
+        </section>
+
+        <!-- 基本信息部分 -->
+        <section class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Age</div>
+                <div>28</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Email</div>
+                <div>contact@last77.org</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Phone</div>
+                <div>+1 234 567 890</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Location</div>
+                <div>San Francisco, CA</div>
+            </div>
+        </section>
+
+        <!-- 技能部分 -->
+        <section class="skills-section">
+            <h2 class="section-title">Professional Skills</h2>
+            <div class="skill-grid">
+                <div class="skill-item">
+                    <div class="skill-name">Frontend Development</div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">Backend Development</div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">UI/UX Design</div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">DevOps</div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 照片墙部分 -->
+        <section class="photos-section">
+            <h2 class="section-title">Life Moments</h2>
+            <div class="photo-grid">
+                <div class="photo-item">
+                    <img src="../images/life1.jpg" alt="Life moment 1">
+                </div>
+                <div class="photo-item">
+                    <img src="../images/life2.jpg" alt="Life moment 2">
+                </div>
+                <div class="photo-item">
+                    <img src="../images/life3.jpg" alt="Life moment 3">
+                </div>
+                <div class="photo-item">
+                    <img src="../images/life4.jpg" alt="Life moment 4">
+                </div>
+            </div>
+        </section>
+
+        <!-- 工作经验部分 -->
+        <section class="experience-section">
+            <h2 class="section-title">Work Experience</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">2021 - Present</div>
+                    <div class="timeline-title">Senior Full Stack Developer</div>
+                    <div class="timeline-company">Tech Solutions Inc.</div>
+                    <div class="timeline-description">
+                        Led development of multiple high-impact web applications using modern technologies.
+                        Managed team of 5 developers and implemented agile methodologies.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2018 - 2021</div>
+                    <div class="timeline-title">Frontend Developer</div>
+                    <div class="timeline-company">Digital Innovations Co.</div>
+                    <div class="timeline-description">
+                        Developed responsive web applications using React and Vue.js.
+                        Improved website performance by 40% through optimization techniques.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <!-- 使用与主页相同的页脚 -->
+        </div>
+    </footer>
+</body>
+</html> 
