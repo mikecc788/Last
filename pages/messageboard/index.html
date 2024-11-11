@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Board - Last77</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <!-- 导航栏部分保持不变 -->
+    </header>
+
+    <div class="message-container">
+        <div class="message-form">
+            <div class="form-group">
+                <label for="name">昵称</label>
+                <input type="text" id="name" class="form-control" placeholder="请输入您的昵称">
+            </div>
+            <div class="form-group">
+                <label for="message">留言内容</label>
+                <textarea id="message" class="form-control" placeholder="写下您想说的话..."></textarea>
+            </div>
+            <button class="submit-btn" id="submitBtn">发布留言</button>
+        </div>
+
+        <div class="messages" id="messageList">
+            <!-- 留言列表将通过 JavaScript 动态加载 -->
+        </div>
+    </div>
+
+    <!-- 按顺序加载JS文件 -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

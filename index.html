@@ -53,6 +53,12 @@
                 <a href="pages/signup.html" class="signup-btn">Sign up</a>
                 <a href="pages/login.html" class="login-btn">Log In</a>
             </div>
+            <!-- 在 nav 中添加汉堡菜单按钮 -->
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </nav>
     </header>
 
@@ -159,7 +165,7 @@
                 <div class="footer-section">
                     <h3>Last</h3>
                     <ul>
-                        <li><a href="#">About Last</a></li>
+                        <li><a href="pages/messageboard.html">留言</a></li>
                         <li><a href="pages/portfolio.html">Last Portfolio</a></li>
                         <li><a href="#">Download the App</a></li>
                         <li><a href="#">Blog</a></li>
@@ -218,5 +224,36 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <!-- 在底部添加 JavaScript -->
+    <script>
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.querySelector('.main-nav').classList.toggle('active');
+            this.classList.toggle('active');
+        });
+
+        // 添加触摸滑动支持
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.querySelector('.carousel-container').addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.querySelector('.carousel-container').addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX) {
+                // 向左滑动
+                nextSlide();
+            }
+            if (touchEndX > touchStartX) {
+                // 向右滑动
+                prevSlide();
+            }
+        }
+    </script>
 </body>
 </html>
