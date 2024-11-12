@@ -18,10 +18,15 @@ class MessageBoard {
         }
 
         try {
-            await MessageAPI.submitMessage(name, content);
-            UI.clearInputs();
-            this.loadMessages();
+            const result = await MessageAPI.submitMessage(name, content);
+            if (result) {
+                UI.clearInputs();
+                await this.loadMessages();
+            } else {
+                throw new Error('提交失败');
+            }
         } catch (error) {
+            console.error('Submit Error:', error);
             UI.showError('提交失败，请稍后重试');
         }
     }
@@ -31,30 +36,13 @@ class MessageBoard {
         try {
             const messages = await MessageAPI.getMessages();
             UI.renderMessages(messages);
+            UI.initMessageInteractions();
         } catch (error) {
+            console.error('Load Error:', error);
             UI.showError('加载失败，请刷新页面重试');
         }
     }
 }
-
-// 在 main.js 中使用事件监听器
-document.getElementById('submitBtn').addEventListener('click', async function() {
-    const name = UI.elements.nameInput.value;
-    const content = UI.elements.messageInput.value;
-
-    if (!Utils.validateInput(name, content)) {
-        UI.showError('请填写昵称和留言内容');
-        return;
-    }
-
-    try {
-        await MessageAPI.submitMessage(name, content);
-        UI.clearInputs();
-        loadMessages();
-    } catch (error) {
-        UI.showError('提交失败，请稍后重试');
-    }
-});
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {

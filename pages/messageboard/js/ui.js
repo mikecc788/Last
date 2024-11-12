@@ -35,27 +35,104 @@ const UI = {
 
     createMessageHTML(message) {
         return `
-            <div class="message">
-                <div class="message-header">
-                    <span class="message-author">${Utils.escapeHtml(message.name)}</span>
-                    <span class="message-time">${Utils.formatDate(message.timestamp)}</span>
-                </div>
-                <div class="message-content">${Utils.escapeHtml(message.content)}</div>
-                <div class="message-footer">
-                    <div class="message-action">
-                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                        </svg>
-                        <span>喜欢</span>
-                    </div>
-                    <div class="message-action">
-                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"/>
-                        </svg>
-                        <span>回复</span>
+            <div class="message" data-id="${message.id}">
+                <div class="message-inner">
+                    <div class="user-avatar"></div>
+                    <div class="message-content">
+                        <div class="message-author-line">
+                            <span class="message-author">${Utils.escapeHtml(message.name)}</span>
+                            <span class="message-time">${Utils.formatDate(message.timestamp)}</span>
+                            <div class="message-menu">
+                                <button class="menu-trigger" aria-label="更多选项">
+                                    <svg viewBox="0 0 24 24" width="18" height="18">
+                                        <path fill="currentColor" d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                                    </svg>
+                                </button>
+                                <div class="menu-dropdown">
+                                    <button class="menu-item delete-message">
+                                        <svg viewBox="0 0 24 24" width="18" height="18">
+                                            <path fill="currentColor" d="M16 6V4.5C16 3.12 14.88 2 13.5 2h-3C9.11 2 8 3.12 8 4.5V6H3v2h1.06l.81 11.21C4.98 20.78 6.28 22 7.86 22h8.27c1.58 0 2.88-1.22 3-2.79L19.93 8H21V6h-5zm-6-1.5c0-.28.22-.5.5-.5h3c.27 0 .5.22.5.5V6h-4V4.5zm7.13 14.57c-.04.52-.47.93-1 .93H7.86c-.53 0-.96-.41-1-.93L6.07 8h11.85l-.79 11.07z"/>
+                                        </svg>
+                                        <span>删除</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="message-text">${Utils.escapeHtml(message.content)}</div>
                     </div>
                 </div>
             </div>
         `;
+    },
+
+    initMessageInteractions() {
+        document.querySelectorAll('.message').forEach(message => {
+            const menuTrigger = message.querySelector('.menu-trigger');
+            const menuDropdown = message.querySelector('.menu-dropdown');
+            const deleteButton = message.querySelector('.delete-message');
+
+            // 点击菜单按钮
+            menuTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // 关闭其他打开的菜单
+                document.querySelectorAll('.menu-dropdown.show').forEach(dropdown => {
+                    if (dropdown !== menuDropdown) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+                menuDropdown.classList.toggle('show');
+            });
+
+            // 点击删除按钮
+            deleteButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.showDeleteConfirm(message);
+                menuDropdown.classList.remove('show');
+            });
+
+            // 点击页面其他地方关闭菜单
+            document.addEventListener('click', (e) => {
+                if (!menuDropdown.contains(e.target) && !menuTrigger.contains(e.target)) {
+                    menuDropdown.classList.remove('show');
+                }
+            });
+        });
+    },
+
+    showDeleteConfirm(message) {
+        const dialog = document.createElement('div');
+        dialog.className = 'confirm-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-content">
+                <p>确定要删除这条消息吗？</p>
+                <div class="dialog-buttons">
+                    <button class="dialog-button cancel-delete">取消</button>
+                    <button class="dialog-button confirm-delete">删除</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(dialog);
+        setTimeout(() => dialog.classList.add('show'), 10);
+
+        dialog.querySelector('.cancel-delete').onclick = () => {
+            dialog.remove();
+            message.classList.remove('show-actions');
+            message.style.transform = '';
+        };
+
+        dialog.querySelector('.confirm-delete').onclick = async () => {
+            const messageId = message.dataset.id;
+            console.log('Attempting to delete message:', messageId); // 添加日志
+            try {
+                await MessageAPI.deleteMessage(messageId);
+                message.remove();
+                dialog.remove();
+            } catch (error) {
+                console.error('Delete error details:', error); // 添加详细错误日志
+                this.showError('删除失败，请重试');
+                dialog.remove();
+            }
+        };
     }
 }; 

@@ -31,5 +31,27 @@ const MessageAPI = {
             console.error('API Error:', error);
             throw error;
         }
+    },
+
+    async deleteMessage(messageId) {
+        try {
+            console.log('Sending delete request for message:', messageId);
+            const response = await fetch(`${this.API_URL}/messages/${messageId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('Delete response status:', response.status);
+
+            if (!response.ok){
+                const error = await response.json();
+                throw new Error(error.error || '删除失败');
+            }
+            return true;
+        } catch (error) {
+            console.error('Delete Error:', error);
+            throw error;
+        }
     }
 }; 
